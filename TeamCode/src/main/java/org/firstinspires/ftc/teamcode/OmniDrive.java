@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -9,6 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.lang.Math;
 
+@TeleOp(name = "Tri-Omnibot")
 public class OmniDrive {
 
     private DcMotor wheel1, wheel2, wheel3;
@@ -17,16 +20,18 @@ public class OmniDrive {
     private Gamepad gamepad2;
     private Telemetry telemetry;
 
-    public OmniDrive(HardwareMap hMap, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry) {
-        hardwareMap = hMap;
-        this.gamepad1 = gamepad1;
-        this.gamepad2 = gamepad2;
-        this.telemetry = telemetry;
+    @Override
+    public void init(){
         wheel1 = (DcMotor) hardwareMap.get("m1");
         wheel2 = (DcMotor) hardwareMap.get("m2");
         wheel3 = (DcMotor) hardwareMap.get("m3");
+    }
     
-        driveCode(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);    
+    @Override
+    public void loop(){
+        driveCode(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        telemetry();
+    }           
 
     public void driveCode(double xRaw, double yRaw, double rRaw, int speedAug = 1, boolean Logic = true){
         if (this.Logic && gamepad1.left_bumper){
