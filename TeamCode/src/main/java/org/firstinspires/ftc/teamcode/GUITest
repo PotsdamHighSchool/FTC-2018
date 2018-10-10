@@ -1,0 +1,29 @@
+package org.firstinspires.ftc.teamcode;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.view.View;
+
+Paint paint = new Paint();
+Rect r = new Rect(10, 10, 200, 100);
+
+@Override
+public void onDraw(Canvas canvas) {
+    // fill
+    paint.setStyle(Paint.Style.FILL); //https://developer.android.com/reference/android/graphics/Paint.Style.html
+    paint.setColor(Color.BLUE); //
+    canvas.drawRect(r, paint);
+
+    // border
+    paint.setStyle(Paint.Style.STROKE);
+    paint.setColor(Color.YELLOW);
+    canvas.drawRect(r, paint);
+}
+
+
+
+
+
+
