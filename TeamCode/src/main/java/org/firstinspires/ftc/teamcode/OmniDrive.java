@@ -33,11 +33,7 @@ public class OmniDrive {
     
     @Override
     public void loop(){
-<<<<<<< HEAD
-        driveCode(gamepad1.left_stick_x, gamepad1.left_stick_y, (gamepad1.right_stick_x + gamepad1.right_trigger - gamepad1.left_trigger));
-=======
         driveCode(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, logic);
->>>>>>> Made OmniDrive.java work... java is hard when you don't look at docs!
         telemetry();
     }           
 
@@ -69,15 +65,9 @@ public class OmniDrive {
 
     public void telemetry(){
         //Motors
-<<<<<<< HEAD
-        telemetry.addData("Motor 1:", " %.2f", (wheel1.getPower());
-        telemetry.addData("Motor 2:", " %.2f", (wheel2.getPower());
-        telemetry.addData("Motor 3:", " %.2f", (wheel3.getPower());
-=======
         telemetry.addData("Motor 1:", " %.2f", (wheel1.getPower()));
         telemetry.addData("Motor 2:", " %.2f", (wheel2.getPower()));
         telemetry.addData("Motor 3:", " %.2f\n", (wheel3.getPower()));
->>>>>>> Made OmniDrive.java work... java is hard when you don't look at docs!
         //Speed Modifier
         telemetry.addData("Mod:", " %d\n", (speedAug));
         //Sticks
