@@ -1,3 +1,6 @@
+## What we really care about
+https://github.com/PotsdamHighSchool/FTC-2018/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode
+
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
