@@ -63,9 +63,9 @@ public class OmniDrive {
         //Motors
         telemetry.addData("Motor 1:", " %.2f", (wheel1.getPower());
         telemetry.addData("Motor 2:", " %.2f", (wheel2.getPower());
-        telemetry.addData("Motor 3:", " %.2f\n", (wheel3.getPower());
+        telemetry.addData("Motor 3:", " %.2f", (wheel3.getPower());
         //Speed Modifier
-        telemetry.addData("Mod:", " %d", (speedAug));
+        telemetry.addData("Mod:", " %d\n", (speedAug));
         //Sticks
         telemetry.addData("Left Stick:", "(%.2f, %.2f) ", (gamepad1.left_stick_x, gamepad1.right_stick_x));
         telemetry.addData("Right Stick:", "(%.2f, %.2f) ", (gamepad1.left_stick_x, gamepad1.left_stick_x));
