@@ -29,7 +29,7 @@ public class OmniDrive {
     
     @Override
     public void loop(){
-        driveCode(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        driveCode(gamepad1.left_stick_x, gamepad1.left_stick_y, (gamepad1.right_stick_x + gamepad1.right_trigger - gamepad1.left_trigger));
         telemetry();
     }           
 
