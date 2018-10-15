@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.lang.Math;
 
 @TeleOp(name = "Tri-Omnibot")
-public class OmniDrive {
+public class OmniDrive extends OpMode {
 
     private DcMotor wheel1, wheel2, wheel3;
     private HardwareMap hardwareMap;
@@ -38,9 +38,9 @@ public class OmniDrive {
     }           
 
     public void driveCode(double xRaw, double yRaw, double rRaw, boolean driveLogic){
-        x = xRaw / speedAug;
-        y = yRaw / speedAug;
-        r = rRaw / speedAug;
+        double x = xRaw / speedAug;
+        double y = yRaw / speedAug;
+        double r = rRaw / speedAug;
 
         if (driveLogic&& gamepad1.left_bumper){
             if(speedAug >= 1) { //I changed it, happy?
