@@ -9,39 +9,61 @@ public class BetterTankBot extends OpMode {
 
     private DcMotor left;
     private DcMotor right;
-    private boolean logic;
+    private boolean driveLogic;
+    private boolean driveModeLogic;
+    private boolean driveMode;
     private int speedAug;
 
     @Override
     public void init(){
         left = (DcMotor) hardwareMap.get("left");
         right = (DcMotor) hardwareMap.get("right");
-        logic = true;
+        driveLogic = true;
+        driveModeLogic = true;
+        driveMode = true;
     }
 
     @Override
     public void loop(){
-        driveCode("hello", logic);
+        driveCode("hello", driveLogic, driveModeLogic, driveMode);
         telemetry();
     }
 
-    public void driveCode(String hi, Boolean logic){
-        if (logic&& gamepad1.left_bumper){
-            if(speedAug >= 1) { //I changed it, happy?
+    public void driveCode(String hi, Boolean driveLogic, Boolean driveModeLogic, Boolean driveMode) {
+        if (driveLogic && gamepad1.left_bumper) {
+            if (speedAug >= 1) { //I changed it, happy?
                 speedAug -= 1;
             }
-            this.logic= false;
-        }
-        else if(logic&& gamepad1.right_bumper) {
+            this.driveLogic = false;
+        } else if (driveLogic && gamepad1.right_bumper) {
             speedAug += 1;
-            this.logic= false;
-        }
-        else if(!gamepad1.left_bumper && !gamepad1.right_bumper){
-            this.logic= true;
+            this.driveLogic = false;
+        } else if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
+            this.driveLogic = true;
         }
 
-        left.setPower(gamepad1.left_stick_y);
-        right.setPower(gamepad1.right_stick_y);
+        if (this.driveModeLogic && gamepad1.left_stick_button && !driveMode){
+            driveMode = true;
+            this.driveModeLogic = false;
+        }
+        else if(this.driveModeLogic && gamepad1.left_stick_button && driveMode){
+            driveMode = false;
+            this.driveModeLogic = false;
+        }
+        else{
+            this.driveModeLogic = true;
+        }
+
+
+        if (driveMode) { //true = tank, false = joy
+            left.setPower(gamepad1.left_stick_y);
+            right.setPower(gamepad1.right_stick_y);
+        }
+        else{
+            left.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
+            right.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x);
+
+        }
     }
 
     public void telemetry(){
