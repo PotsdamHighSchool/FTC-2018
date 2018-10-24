@@ -27,35 +27,35 @@ public class BetterTankBot extends OpMode {
 
     @Override
     public void loop(){
-        driveCode("hello", driveLogic, driveModeLogic, driveMode);
+        driveCode();
         telemetry();
     }
 
-    public void driveCode(String hi, Boolean driveLogic, Boolean driveModeLogic, Boolean driveMode) {
+    public void driveCode() {
         telemetry.addData("Mode", "%s", driveMode);
         if (driveLogic && gamepad1.left_bumper) {
             if (speedAug >= 1) { //I changed it, happy?
                 speedAug -= 1;
             }
-            this.driveLogic = false;
+            driveLogic = false;
         } else if (driveLogic && gamepad1.right_bumper) {
             speedAug += 1;
-            this.driveLogic = false;
+            driveLogic = false;
         } else if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
-            this.driveLogic = true;
+            driveLogic = true;
         }
 
         telemetry.addData("Is the left stick down: ", gamepad1.left_stick_button);
-        if (this.driveModeLogic && gamepad1.x && !driveMode){
+        if (driveModeLogic &&  gamepad1.left_stick_button && !driveMode){
             driveMode = true;
-            this.driveModeLogic = false;
+            driveModeLogic = false;
         }
-        else if(this.driveModeLogic && gamepad1.x && driveMode){
+        else if(driveModeLogic && gamepad1.left_stick_button && driveMode){
             driveMode = false;
-            this.driveModeLogic = false;
+            driveModeLogic = false;
         }
-        else{
-            this.driveModeLogic = true;
+        else if(!gamepad1.left_stick_button){
+            driveModeLogic = true;
         }
 
 
@@ -64,8 +64,9 @@ public class BetterTankBot extends OpMode {
             right.setPower(gamepad1.right_stick_y);
         }
         else{
-            left.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x);
-            right.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x);
+            left.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x);
+            right.setPower(gamepad1.left_stick_y +
+                    -gamepad1.left_stick_x);
 
         }
     }
