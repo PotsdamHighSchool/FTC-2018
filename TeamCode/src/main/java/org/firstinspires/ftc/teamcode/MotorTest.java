@@ -19,10 +19,10 @@ public class MotorTest extends OpMode {
         @Override
         public void init() {
 
-            frontLeft = (DcMotor) hardwareMap.get("mapFrontLeft");
-            frontRight = (DcMotor) hardwareMap.get("mapFrontRight");
-            backLeft = (DcMotor) hardwareMap.get("mapBackLeft");
-            backRight = (DcMotor) hardwareMap.get("mapBackRight");
+            frontLeft = (DcMotor) hardwareMap.get("FLeft");
+            frontRight = (DcMotor) hardwareMap.get("FRight");
+            backLeft = (DcMotor) hardwareMap.get("BLeft");
+            backRight = (DcMotor) hardwareMap.get("BRight");
         }
 
         @Override
