@@ -19,6 +19,7 @@ public class BetterTankBot4 extends OpMode {
     private boolean driveMode;
     private double speedAug;
     private final double speedStep = 0.1;
+    private MusicPlayer music;
 
     @Override
     public void init(){
@@ -32,12 +33,14 @@ public class BetterTankBot4 extends OpMode {
         speedAug = .5;
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        music = new MusicPlayer(hardwareMap, gamepad2, telemetry);
     }
 
     @Override
     public void loop(){
         driveCode();
         telemetry();
+        music.run();
     }
 
     public void driveCode() {

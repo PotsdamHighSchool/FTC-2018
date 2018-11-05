@@ -32,8 +32,14 @@ public class MusicPlayer {
         musicSelect = 0;
         songs.add("Cat");
         songs.add("He-Man");
+        songs.add("The Best");
+        songs.add("Africa by Toto");
+        songs.add("AAAAAAAAAAAAAAAAAA");
         Rsongs.add(R.raw.cat);
         Rsongs.add(R.raw.heman);
+        Rsongs.add(R.raw.thebest);
+        Rsongs.add(R.raw.toto);
+        Rsongs.add(R.raw.ahh);
     }
 
     public void run() {
