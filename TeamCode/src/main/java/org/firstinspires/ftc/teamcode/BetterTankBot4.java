@@ -92,12 +92,11 @@ public class BetterTankBot4 extends OpMode {
 
         //Servo Code
         if(gamepad1.a){         //Open
-            claw.setPosition(1);
+            claw.setPosition(0.5);
 
         }
         if(gamepad1.b){         //Closed
             claw.setPosition(0);
-
         }
     }
 
