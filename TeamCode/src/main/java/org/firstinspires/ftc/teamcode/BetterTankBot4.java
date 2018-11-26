@@ -1,18 +1,21 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Better Tank, but there's 4 wheels")
 public class BetterTankBot4 extends OpMode {
 
+    //Motors
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
     private DcMotor backLeft;
 
+    //Servos
+    private Servo claw;
 
     private boolean driveLogic;
     private boolean driveModeLogic;
@@ -27,12 +30,13 @@ public class BetterTankBot4 extends OpMode {
         frontRight = (DcMotor) hardwareMap.get("FRight");
         backLeft = (DcMotor) hardwareMap.get("BLeft");
         backRight = (DcMotor) hardwareMap.get("BRight");
+        claw = (Servo) hardwareMap.get("claw");
         driveLogic = true;
         driveModeLogic = true;
         driveMode = true;
         speedAug = .5;
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         music = new MusicPlayer(hardwareMap, gamepad2, telemetry);
     }
 
@@ -44,7 +48,7 @@ public class BetterTankBot4 extends OpMode {
     }
 
     public void driveCode() {
-        telemetry.addData("Mode", "%s", driveMode);
+        telemetry.addData("Mode", driveMode); // might be the problem
         if (driveLogic && gamepad1.left_bumper) {
             if (speedAug-speedStep >= 0) {
                 speedAug -= speedStep;
@@ -84,6 +88,15 @@ public class BetterTankBot4 extends OpMode {
             frontRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x)*speedAug);
             backLeft.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x)*speedAug);
             backRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x)*speedAug);
+        }
+
+        //Servo Code
+        if(gamepad1.a){         //Open
+            claw.setPosition(1);
+
+        }
+        if(gamepad1.b){         //Closed
+            claw.setPosition(0);
 
         }
     }

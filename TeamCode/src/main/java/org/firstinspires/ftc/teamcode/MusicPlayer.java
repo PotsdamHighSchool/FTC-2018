@@ -5,16 +5,13 @@ package org.firstinspires.ftc.teamcode;
  */
 
     import android.media.MediaPlayer;
-
     import com.qualcomm.robotcore.hardware.Gamepad;
     import com.qualcomm.robotcore.hardware.HardwareMap;
-
     import org.firstinspires.ftc.robotcore.external.Telemetry;
-
     import java.util.ArrayList;
     import java.util.LinkedList;
 
-public class MusicPlayer {
+    public class MusicPlayer {
     private MediaPlayer player;
     private boolean selectLogic;
     private int musicSelect;
