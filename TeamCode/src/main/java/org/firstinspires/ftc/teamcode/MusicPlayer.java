@@ -45,23 +45,20 @@ package org.firstinspires.ftc.teamcode;
         telemetry.addData("MusicSelect", musicSelect);
 
 
-        if (gamepad1.a) {
+        if (gamepad1.start) {
             if (player == null) {
-
-
                 player = MediaPlayer.create(hardwareMap.appContext, Rsongs.get(musicSelect));
                 player.start();
-
             }
         }
-        if (gamepad1.b) {
+        if (gamepad1.back) {
             if (!(player == null)) {
                 player.stop();
                 player.reset();
                 player = null;
             }
         }
-        if (gamepad1.right_bumper && selectLogic) {
+        if (gamepad1.right_trigger > 0.1 && selectLogic) {
             musicSelect += 1;
             selectLogic = false;
             telemetry.update();
@@ -69,7 +66,7 @@ package org.firstinspires.ftc.teamcode;
                 musicSelect -= 1;
             }
         }
-        if (gamepad1.left_bumper && selectLogic) {
+        if (gamepad1.left_trigger > 0.1 && selectLogic) {
             musicSelect -= 1;
             selectLogic = false;
             telemetry.update();

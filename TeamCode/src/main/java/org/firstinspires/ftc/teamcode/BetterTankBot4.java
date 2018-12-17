@@ -14,15 +14,21 @@ public class BetterTankBot4 extends OpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
 
+    private DcMotor armSeg1;
+    private DcMotor armSeg2;
+
     //Servos
     private Servo claw;
 
     private boolean driveLogic;
     private boolean driveModeLogic;
+    private boolean armLogic;
     private boolean driveMode;
     private double speedAug;
+    private double armAug;
     private final double speedStep = 0.1;
     private MusicPlayer music;
+    float clawPos = 0;
 
     @Override
     public void init(){
@@ -30,21 +36,39 @@ public class BetterTankBot4 extends OpMode {
         frontRight = (DcMotor) hardwareMap.get("FRight");
         backLeft = (DcMotor) hardwareMap.get("BLeft");
         backRight = (DcMotor) hardwareMap.get("BRight");
+
+        armSeg1 = (DcMotor) hardwareMap.get("arm1");
+        armSeg2 = (DcMotor) hardwareMap.get("arm2");
+
+        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         claw = (Servo) hardwareMap.get("claw");
         driveLogic = true;
         driveModeLogic = true;
+        armLogic = true;
         driveMode = true;
         speedAug = .5;
+        armAug = .5;
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         music = new MusicPlayer(hardwareMap, gamepad2, telemetry);
+
     }
 
     @Override
     public void loop(){
         driveCode();
+        claw();
         telemetry();
-        music.run();
+        music.run(); //ENABLE THIS FOR MUSIC - Julian      REALLY? - Morgan
+       /* if (gamepad1.b){
+            EmStop();
+        }*/
+
+        //Stupid bug fix that may not work (or may, i dunno) - Julian
+        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void driveCode() {
@@ -76,7 +100,6 @@ public class BetterTankBot4 extends OpMode {
             driveModeLogic = true;
         }
 
-
         if (driveMode) { //true = tank, false = joy
             frontLeft.setPower(gamepad1.left_stick_y * speedAug);
             frontRight.setPower(gamepad1.right_stick_y * speedAug);
@@ -91,13 +114,7 @@ public class BetterTankBot4 extends OpMode {
         }
 
         //Servo Code
-        if(gamepad1.a){         //Open
-            claw.setPosition(0.5);
 
-        }
-        if(gamepad1.b){         //Closed
-            claw.setPosition(0);
-        }
     }
 
     public void telemetry(){
@@ -113,5 +130,40 @@ public class BetterTankBot4 extends OpMode {
         //Sticks
         telemetry.addData("Left Stick:", "(%.2f, %.2f) ", gamepad1.left_stick_x, gamepad1.right_stick_x);
         telemetry.addData("Right Stick:", "(%.2f, %.2f) ", gamepad1.left_stick_x, gamepad1.left_stick_x);
+    }
+    public void claw(){
+        if(gamepad2.a){
+            clawPos = 0.5f;
+        }
+        if(gamepad2.b){
+            clawPos = 0;
+        }
+        claw.setPosition(clawPos);
+
+        if (armLogic && gamepad2.left_bumper) {
+            if (armAug-speedStep >= 0) {
+                armAug -= speedStep;
+            }
+            armLogic = false;
+        } else if (armLogic && gamepad2.right_bumper) {
+            if (armAug+speedStep <= 1) {
+                armAug += speedStep;
+            }
+            armLogic = false;
+        } else if (!gamepad2.left_bumper && !gamepad2.right_bumper) {
+            armLogic = true;
+        }
+
+        armSeg1.setPower(gamepad2.left_stick_y * armAug);
+        armSeg2.setPower(-gamepad2.right_stick_y * armAug);
+    }
+    public void EmStop(){
+        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        armSeg1.setPower(0);
+        armSeg2.setPower(0);
+        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 }
