@@ -20,23 +20,26 @@ package org.firstinspires.ftc.teamcode;
     private Gamepad gamepad1;
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
+    private boolean logic;
+    private boolean start;
 
     public MusicPlayer(HardwareMap hardwareMap, Gamepad gamepad1, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.gamepad1 = gamepad1;
         selectLogic = true;
-        musicSelect = 0;
+        musicSelect = 4;
+        songs.add("Africa by Toto");
         songs.add("Cat");
         songs.add("He-Man");
-        songs.add("The Best");
-        songs.add("Africa by Toto");
         songs.add("AAAAAAAAAAAAAAAAAA");
+        songs.add("Silence");
+        Rsongs.add(R.raw.toto);
         Rsongs.add(R.raw.cat);
         Rsongs.add(R.raw.heman);
-        Rsongs.add(R.raw.thebest);
-        Rsongs.add(R.raw.toto);
         Rsongs.add(R.raw.ahh);
+        logic = true;
+        start = true;
     }
 
     public void run() {
@@ -45,18 +48,25 @@ package org.firstinspires.ftc.teamcode;
         telemetry.addData("MusicSelect", musicSelect);
 
 
-        if (gamepad1.start) {
-            if (player == null) {
+        if (gamepad1.start && logic && start) {
+            if (player == null && musicSelect != 4) {
                 player = MediaPlayer.create(hardwareMap.appContext, Rsongs.get(musicSelect));
                 player.start();
+                logic = false;
+                start = false;
             }
         }
-        if (gamepad1.back) {
-            if (!(player == null)) {
+        else if (gamepad1.start &&  logic && !start) {
+            if (player != null) {
                 player.stop();
                 player.reset();
                 player = null;
+                start = true;
+                logic = false;
             }
+        }
+        if (!gamepad1.start && !logic){
+            logic = true;
         }
         if (gamepad1.right_trigger > 0.1 && selectLogic) {
             musicSelect += 1;
@@ -74,7 +84,7 @@ package org.firstinspires.ftc.teamcode;
                 musicSelect += 1;
             }
         }
-        if (!gamepad1.left_bumper && !gamepad1.right_bumper) {
+        if (gamepad1.left_trigger == 0.0 && gamepad1.right_trigger == 0.0) {
                 selectLogic = true;
         }
     }

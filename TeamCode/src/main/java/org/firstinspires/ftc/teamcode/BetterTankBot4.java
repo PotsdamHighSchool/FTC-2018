@@ -5,20 +5,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Locale;
+
 @TeleOp(name = "Better Tank, but there's 4 wheels")
 public class BetterTankBot4 extends OpMode {
 
-    //Motors
-    private DcMotor frontRight;
-    private DcMotor frontLeft;
-    private DcMotor backRight;
-    private DcMotor backLeft;
-
-    private DcMotor armSeg1;
-    private DcMotor armSeg2;
-
-    //Servos
-    private Servo claw;
+    private  BetterTankHardware hardware;
 
     private boolean driveLogic;
     private boolean driveModeLogic;
@@ -32,26 +26,15 @@ public class BetterTankBot4 extends OpMode {
 
     @Override
     public void init(){
-        frontLeft = (DcMotor) hardwareMap.get("FLeft");
-        frontRight = (DcMotor) hardwareMap.get("FRight");
-        backLeft = (DcMotor) hardwareMap.get("BLeft");
-        backRight = (DcMotor) hardwareMap.get("BRight");
 
-        armSeg1 = (DcMotor) hardwareMap.get("arm1");
-        armSeg2 = (DcMotor) hardwareMap.get("arm2");
+        hardware = new BetterTankHardware(hardwareMap);
 
-        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        claw = (Servo) hardwareMap.get("claw");
         driveLogic = true;
         driveModeLogic = true;
         armLogic = true;
         driveMode = true;
         speedAug = .5;
-        armAug = .5;
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        armAug = .75;
         music = new MusicPlayer(hardwareMap, gamepad2, telemetry);
 
     }
@@ -67,19 +50,19 @@ public class BetterTankBot4 extends OpMode {
         }*/
 
         //Stupid bug fix that may not work (or may, i dunno) - Julian
-        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hardware.armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hardware.armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void driveCode() {
         telemetry.addData("Mode", driveMode); // might be the problem
         if (driveLogic && gamepad1.left_bumper) {
-            if (speedAug-speedStep >= 0) {
+            if (speedAug - speedStep >= 0) {
                 speedAug -= speedStep;
             }
             driveLogic = false;
         } else if (driveLogic && gamepad1.right_bumper) {
-            if (speedAug+speedStep <= 1) {
+            if (speedAug + speedStep <= 1) {
                 speedAug += speedStep;
             }
             driveLogic = false;
@@ -88,29 +71,21 @@ public class BetterTankBot4 extends OpMode {
         }
 
         telemetry.addData("Is the left stick down: ", gamepad1.left_stick_button);
-        if (driveModeLogic &&  gamepad1.left_stick_button && !driveMode){
+        if (driveModeLogic && gamepad1.left_stick_button && !driveMode) {
             driveMode = true;
             driveModeLogic = false;
-        }
-        else if(driveModeLogic && gamepad1.left_stick_button && driveMode){
+        } else if (driveModeLogic && gamepad1.left_stick_button && driveMode) {
             driveMode = false;
             driveModeLogic = false;
-        }
-        else if(!gamepad1.left_stick_button){
+        } else if (!gamepad1.left_stick_button) {
             driveModeLogic = true;
         }
 
+
         if (driveMode) { //true = tank, false = joy
-            frontLeft.setPower(gamepad1.left_stick_y * speedAug);
-            frontRight.setPower(gamepad1.right_stick_y * speedAug);
-            backLeft.setPower(gamepad1.left_stick_y * speedAug);
-            backRight.setPower(gamepad1.right_stick_y * speedAug);
-        }
-        else{
-            frontLeft.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x)*speedAug);
-            frontRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x)*speedAug);
-            backLeft.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x)*speedAug);
-            backRight.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x)*speedAug);
+            hardware.setDriveMotors(gamepad1.left_stick_y * speedAug, gamepad1.right_stick_y * speedAug);
+        } else {
+            hardware.setDriveMotors((gamepad1.left_stick_y - gamepad1.left_stick_x) * speedAug, (gamepad1.left_stick_y + gamepad1.left_stick_x) * speedAug);
         }
 
         //Servo Code
@@ -118,11 +93,19 @@ public class BetterTankBot4 extends OpMode {
     }
 
     public void telemetry(){
+        //Sensors
+        telemetry.addData("Distance:", String.format(Locale.US, "%.02f",hardware.colorSensor.getDistance(DistanceUnit.CM)));
+        telemetry.addData("Alpha: ", (hardware.colorSensor.alpha()));
+        telemetry.addData("Red: ", (hardware.colorSensor.red()));
+        telemetry.addData("Green: ", (hardware.colorSensor.green()));
+        telemetry.addData("Blue: ", (hardware.colorSensor.blue()));
+
+
         //Motors
-        telemetry.addData("front left:", " %.2f", (frontLeft.getPower()));
-        telemetry.addData("front right:", " %.2f", (frontRight.getPower()));
-        telemetry.addData("back left:", " %.2f", (backLeft.getPower()));
-        telemetry.addData("back right.:", " %.2f", (backRight.getPower()));
+        telemetry.addData("front left:", " %.2f", (hardware.frontLeft.getPower()));
+        telemetry.addData("front right:", " %.2f", (hardware.frontRight.getPower()));
+        telemetry.addData("back left:", " %.2f", (hardware.backLeft.getPower()));
+        telemetry.addData("back right.:", " %.2f", (hardware.backRight.getPower()));
 
         //Speed Modifier
         telemetry.addData("Mod:", " %.2f\n", (speedAug));
@@ -138,7 +121,7 @@ public class BetterTankBot4 extends OpMode {
         if(gamepad2.b){
             clawPos = 0;
         }
-        claw.setPosition(clawPos);
+        hardware.claw.setPosition(clawPos);
 
         if (armLogic && gamepad2.left_bumper) {
             if (armAug-speedStep >= 0) {
@@ -154,16 +137,16 @@ public class BetterTankBot4 extends OpMode {
             armLogic = true;
         }
 
-        armSeg1.setPower(gamepad2.left_stick_y * armAug);
-        armSeg2.setPower(-gamepad2.right_stick_y * armAug);
+        hardware.armSeg1.setPower(gamepad2.left_stick_y * armAug);
+        hardware.armSeg2.setPower(gamepad2.right_stick_y * armAug);
     }
     public void EmStop(){
-        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        armSeg1.setPower(0);
-        armSeg2.setPower(0);
-        armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hardware.armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        hardware.armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        hardware.armSeg1.setPower(0);
+        hardware.armSeg2.setPower(0);
+        hardware.armSeg1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hardware.armSeg2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 }
